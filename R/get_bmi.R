@@ -14,8 +14,8 @@
 #' get_bmi(75, 180)
 get_bmi <- function(wt, ht, wt_units = "kg", ht_units = "cm") {
 
-  unit_convert(wt, substitute(wt_units), "kg")/
-  unit_convert(ht, substitute(ht_units), "m")^2
+  {unit_convert(wt, substitute(wt_units), "kg")/
+  unit_convert(ht, substitute(ht_units), "m")^2} %>%
+  bmi_check(.)
 
 }
-
