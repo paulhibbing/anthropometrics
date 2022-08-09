@@ -1,4 +1,4 @@
-percentile_age <- function(age_mos, age_yrs) {
+percentile_age <- function(age_mos, age_yrs, min_age = 23.5, max_age = 240.5) {
 
   if (is.null(age_mos)) {
 
@@ -12,8 +12,9 @@ percentile_age <- function(age_mos, age_yrs) {
 
   }
 
-  if (age_mos < 23.5 | age_mos > 240.5) stop(
-    "Age (in months) must fall in the interval [23.5, 240.5]"
+  if (age_mos < min_age | age_mos > max_age) stop(
+    "Age (in months) must fall in the interval",
+    " [", min_age, ", ", max_age, "]"
   )
 
   age_mos
@@ -30,23 +31,27 @@ percentile_lms <- function(
   reference, colname, lesser_index, greater_index, increment
 ) {
 
+  interval <- diff(reference$Age[c(lesser_index, greater_index)])
+
   lesser_proportion <-
-    reference[lesser_index, colname] * (1 - increment)
+    reference[lesser_index, colname] * (1 - increment/interval)
 
   greater_proportion <-
-    reference[greater_index, colname] * increment
+    reference[greater_index, colname] * (increment/interval)
 
   lesser_proportion + greater_proportion
 
 }
 
-percentile_reference <- function(sex) {
+percentile_reference <- function(
+  sex, standards = standards_cdc, check_age = TRUE
+) {
 
-  {standards_cdc$Sex == sex} %>%
-  standards_cdc[., ] %T>%
+  {standards$Sex == sex} %>%
+  standards[., ] %T>%
   {stopifnot(
     !any(duplicated(.$Age)),
-    all(diff(order(.$Age)) == 1),
+    all(diff(order(.$Age)) == 1) | !check_age,
     nrow(.) > 0
   )}
 

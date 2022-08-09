@@ -1,20 +1,30 @@
-# bmi <- sample(50, 23, 2.5)
-# sex <- sample(c("Male", "Female"), 50, TRUE)
-# age_yrs <- pmin(pmax(sample(10, 8), 0), )
-
 weight_status_who_youth <- function(
   bmi, sex = c("Male", "Female"),
   age_yrs = NULL, age_mos = NULL,
   severe_35 = TRUE
 ) {
 
+  ## Disclaimer
+
+    warning(
+      "WHO BMI analysis is experimental and needs testing",
+      call. = FALSE
+    )
+
   ## Format variables
 
     sex %<>% sapply(percentile_sex, USE.NAMES = FALSE)
 
-    reference <- lapply(sex, percentile_reference)
+    reference <- lapply(
+      sex, percentile_reference,
+      standards = standards_who, check_age = FALSE
+    )
 
-    age_mos %<>% sapply(age_yrs, percentile_age, age_mos = ., USE.NAMES = FALSE)
+    age_mos %<>% sapply(
+      age_yrs, percentile_age,
+      age_mos = ., min_age = 0, max_age = 228,
+      USE.NAMES = FALSE
+    )
 
     bmi %<>% units::drop_units(.)
 
@@ -29,13 +39,11 @@ weight_status_who_youth <- function(
 
         #Prepare for calculations
 
-        increment <-
-          floor(age_mos + 0.5) %>%
-          {age_mos - . + 0.5}
-
-        greater_index <- percentile_index(reference, age_mos + 1)
-
         lesser_index <- percentile_index(reference, age_mos)
+
+        greater_index <- lesser_index + 1
+
+        increment <- age_mos - reference$Age[lesser_index]
 
         #Get Z score and percentile
 
