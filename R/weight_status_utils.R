@@ -4,12 +4,12 @@ weight_status_select <- function(select, method) {
 
     select <- match.arg(
       select,
-      c("bmi", "percentile", "classification", "all"),
+      c("bmi", "percentile", "classification", "cutoff", "all"),
       TRUE
     )
 
     if ("all" %in% select) {
-      select <- c("bmi", "percentile", "classification")
+      select <- c("bmi", "percentile", "classification", "cutoff")
     }
 
   ## Determine if percentile needs to be removed,
@@ -18,17 +18,18 @@ weight_status_select <- function(select, method) {
     if (method %in% c("adult", "custom")) {
 
       select %<>%
-        setdiff("percentile") %T>%
+        setdiff(c("percentile", "cutoff")) %T>%
         {if (length(.) == 0) stop(
-          "`percentile` is not a valid `select` setting",
-          " when `method` is `adult` or `custom`", call. = FALSE
+          paste(sQuote(select), collapse = " and "),
+          " is/are not valid for `select` when `method`",
+          " is set to 'adult' or 'custom'", call. = FALSE
         )}
 
     }
 
   ## Make sure the ordering is consistent
 
-    c("bmi", "percentile", "classification") %>%
+    c("bmi", "percentile", "classification", "cutoff") %>%
     {.[. %in% select]}
 
 }

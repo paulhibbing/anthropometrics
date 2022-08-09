@@ -1,5 +1,3 @@
-#' @rdname weight_status
-#' @keywords internal
 weight_status_adult <- function(bmi) {
 
   weight_status_cut(
@@ -14,18 +12,6 @@ weight_status_adult <- function(bmi) {
 
 }
 
-#' @param cutoffs The BMI cutoffs to use when determining weight status for
-#'   \code{weight_status_custom}. Default is the same cutoffs used for
-#'   \code{weight_status_adult}
-#' @param labels Character labels to assign for intervals based on
-#'   \code{cutoffs}. Must be either \code{NULL} or else a character vector of
-#'   length one less than \code{length(cutoffs)}. See ?cut for more information
-#' @param right See ?cut
-#' @param check_cutoffs logical. Should custom cutoffs be checked with warnings
-#'   issued when potential issues are detected?
-#'
-#' @rdname weight_status
-#' @keywords internal
 weight_status_custom <- function(
   bmi, cutoffs = c(-Inf, 18.5, 25, 30, 35, 40, Inf),
   labels = c(
