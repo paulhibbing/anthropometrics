@@ -1,4 +1,4 @@
 library(testthat)
-library(anthropometrics)
+library(anthropometry)
 
-test_check("anthropometrics")
+test_check("anthropometry")

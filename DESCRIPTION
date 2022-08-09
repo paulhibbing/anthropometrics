@@ -1,4 +1,4 @@
-Package: anthropometrics
+Package: anthropometry
 Type: Package
 Title: Conveniently characterize body measures
 Version: 0.1.0.9000

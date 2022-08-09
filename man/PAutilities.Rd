@@ -3,7 +3,7 @@
 \docType{package}
 \name{PAutilities}
 \alias{PAutilities}
-\title{Anthropometrics: Conveniently Characterize Body Measures}
+\title{anthropometry: Conveniently Characterize Body Measures}
 \description{
 This package provides an easy to use interface for recording and operating on
 anthropometric values such as height, weight, body mass index (including
