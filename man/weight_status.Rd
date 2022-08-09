@@ -29,17 +29,18 @@
     severe_35 = TRUE
   )
 
+  weight_status_who_youth(
+    bmi, sex = c("Male", "Female"),
+    age_yrs = NULL, age_mos = NULL,
+    severe_35 = TRUE
+  )
+
   weight_status_custom(
     bmi, cutoffs = c(-Inf, 18.5, 25, 30, 35, 40, Inf),
     labels = c("Underweight", "Healthy Weight", "Overweight",
       "Class 1 Obese", "Class 2 Obese", "Class 3 Obese"),
     right = FALSE, check_cutoffs = TRUE
   )
-
-
-## Coming soon:
-
-  weight_status_who_youth(bmi)
 }
 \arguments{
 \item{bmi}{body mass index value(s). Must return \code{TRUE} when tested with
@@ -67,10 +68,10 @@ or unquoted. Default is kg}
 or unquoted. Default is cm}
 
 \item{...}{arguments passed to the internal applicator that corresponds with
-\code{method}, which may include some of the the following, depending on
-the method:}
+\code{method}, which may include some of the the arguments below, depending
+on the method}
 
-\item{sex}{Character scalar indicating participant's sex}
+\item{sex}{character. Sex of participant(s) or patient(s)}
 
 \item{age_yrs}{age in years}
 
@@ -83,17 +84,17 @@ obesity (per
 \href{https://academic.oup.com/ajcn/article/90/5/1314/4598130}{Flegal et
 al., 2009, \emph{Am J Clin Nutr}})}
 
-\item{cutoffs}{The BMI cutoffs to use when determining weight status for
+\item{cutoffs}{the BMI cutoffs to use when determining weight status for
 \code{weight_status_custom}. Default is the same cutoffs used for
 \code{weight_status_adult}}
 
-\item{labels}{Character labels to assign for intervals based on
+\item{labels}{character labels to assign for intervals based on
 \code{cutoffs}. Must be either \code{NULL} or else a character vector of
 length one less than \code{length(cutoffs)}. See ?cut for more information}
 
 \item{right}{See ?cut}
 
-\item{check_cutoffs}{logical. Should custom cutoffs be checked with warnings
+\item{check_cutoffs}{logical. Should custom cutoffs be checked, with warnings
 issued when potential issues are detected?}
 }
 \value{
@@ -112,8 +113,8 @@ Two options are available for passing in values. The first is to
   fed into \code{\link{get_bmi}} to determine the value for further
   classification. Regardless of how values are passed in, careful attention
   should be given to ensure units are correct. The code and internal checks
-  have been set up to help with this as much as possible, but a good amount
-  of onus is still on the user and can likely never be completely eliminated.
+  have been set up to help with this as much as possible, but their
+  unavoidable limitations leave a good amount of onus on the user.
 
 When \code{method} is \code{"CDC youth"} or \code{"WHO youth"}, only one of
 \code{age_mos} and \code{age_yrs} is required. The former will be used if
@@ -130,11 +131,6 @@ set.seed(610)
 weight_status(as_bmi(c(18, 20, 26, 31, 36, 42)))
 
 weight_status(
-  as_bmi(c(18, 20, 26, 31, 36, 42)), method = "custom",
-  select = "classification", labels = NULL, right = TRUE
-)
-
-weight_status(
   method = "CDC youth",
   bmi = as_bmi(rnorm(50, 23, 2.5)),
   sex = sample(
@@ -143,15 +139,34 @@ weight_status(
   age_yrs = pmin(pmax(rnorm(50, 10, 8), 2), 19.5)
 )
 
+## WHO method warns that code is experimental
+suppressWarnings(weight_status(
+  method = "WHO youth",
+  bmi = as_bmi(rnorm(50, 23, 2.5)),
+  sex = sample(
+    c("Male", "Female", "male", "female", "m", "f", "M", "F"), 50, TRUE
+  ),
+  age_yrs = pmin(pmax(rnorm(50, 10, 8), 0), 19)
+))
+
+weight_status(
+  as_bmi(c(18, 20, 26, 31, 36, 42)), method = "custom",
+  select = "classification", labels = NULL, right = TRUE
+)
+
 }
 \references{
 Portions of these functions were developed with reference to public domain
-resources provided by the Centers for Disease Control and Prevention. For
-more information, see:
+resources provided by the Centers for Disease Control and Prevention, as well
+as the World Health Organization. For more information, see:
+
+\url{https://www.cdc.gov/obesity/basics/adult-defining.html}
 
 \url{https://www.cdc.gov/obesity/childhood/defining.html}
 
 \url{https://www.cdc.gov/healthyweight/assessing/bmi/childrens_bmi/tool_for_schools.html}
+
+\url{https://www.who.int/toolkits/child-growth-standards/standards/body-mass-index-for-age-bmi-for-age}
 }
 \seealso{
 \href{https://academic.oup.com/ajcn/article/90/5/1314/4598130}{Flegal et al. (2009)}
